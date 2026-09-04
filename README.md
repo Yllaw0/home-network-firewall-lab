@@ -12,8 +12,6 @@ centralized monitoring.
 
 ## Architecture
 
-![Network architecture](diagrams/network-architecture.svg)
-
 - **WAN** connects the firewall out to the internet.
 - **LAN** is the management network — the only segment with routed access to
   the firewall's admin interface and to the internet, and locked down from
@@ -44,7 +42,7 @@ centralized monitoring.
 ![Interfaces assigned with real subnets](Screenshots/interface-assignments.png)
 *Each VLAN assigned as its own interface with a dedicated subnet.*
 
-![Reusable firewall alias for private networks](Screenshots/firewall-alias.png)
+![Reusable firewall alias for private networks](Screenshots/firewall-alias.webp)
 *The Private_Networks alias referenced by every VLAN's block rule, instead of retyping subnets four times over.*
 
 ![Block-then-allow rule pair on the IoT VLAN](Screenshots/vlan-block-allow-rules.png)
@@ -66,20 +64,20 @@ centralized monitoring.
 ![Scoped test group membership](Screenshots/entra-group-members.png)
 *PFSenseLab-Users — exactly the two test accounts, nothing else in the tenant swept in.*
 
-![Conditional Access policy enforcing MFA](screenshots/conditional-access-policy.png)
+![Conditional Access policy enforcing MFA](Screenshots/conditional-access-policy.png)
 *Scoped to one group, actively enforcing (not report-only).*
 
-![PIM role activation settings](screenshots/pim-role-settings.png)
+![PIM role activation settings](Screenshots/pim-role-settings.png)
 *Global Administrator eligibility: 8-hour bounded activation, MFA and justification required.*
 
 ### Monitoring (Wazuh SIEM)
 - Wazuh manager, indexer, and dashboard deployed as an all-in-one VM
 - Self-monitoring confirmed via the manager's built-in local agent
 
-![Wazuh overview showing real alert volume](screenshots/wazuh-overview-alerts.png)
+![Wazuh overview showing real alert volume](Screenshots/wazuh-overview-alerts.png)
 *Real alert counts from self-monitoring — note the "no agents registered" panel is expected here; the manager's built-in local agent (000) doesn't count toward that widget, it's a known dashboard quirk, not a gap in coverage.*
 
-![Wazuh dashboard showing self-monitoring events](screenshots/wazuh-self-monitoring.png)
+![Wazuh dashboard showing self-monitoring events](Screenshots/wazuh-self-monitoring.png)
 *Agent 000 — the manager's built-in local agent — actively reporting events.*
 
 ## Skills Demonstrated
@@ -115,10 +113,10 @@ these was as valuable as anything that worked on the first try:
   trust-anchor priming fails in forwarding mode, causing the resolver to
   refuse all queries. Fixed by disabling DNSSEC support.
 
-  ![DNS resolution failing, even from localhost](screenshots/dns-resolution-before-fix.png)
+  ![DNS resolution failing, even from localhost](Screenshots/dns-resolution-before-fix.png)
   *Before: even pfSense's own loopback query gets no response — the resolver isn't answering anything.*
 
-  ![DNS resolution working after disabling DNSSEC](screenshots/dns-resolution-after-fix.png)
+  ![DNS resolution working after disabling DNSSEC](Screenshots/dns-resolution-after-fix.png)
   *After: localhost resolves in 15ms once DNSSEC and forwarding stopped conflicting.*
 
 - **Silent under-allocated disk:** a Wazuh install failed with a "disk full"
@@ -126,7 +124,7 @@ these was as valuable as anything that worked on the first try:
   LVM setup had only allocated half the virtual disk to the root volume.
   Fixed by extending the logical volume and filesystem to use the full disk.
 
-  ![LVM volume group showing unallocated space](screenshots/lvm-disk-space-issue.png)
+  ![LVM volume group showing unallocated space](Screenshots/lvm-disk-space-issue.png)
   *24GB sitting completely unused in the volume group — half the disk was never handed to the filesystem that needed it.*
 
 - **Package conflict:** installing a Wazuh agent on the same host as the
