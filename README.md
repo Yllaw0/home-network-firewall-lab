@@ -1,7 +1,8 @@
 # Home Network Security Lab
 
 A hands-on home lab built to demonstrate practical network security and identity
-administration skills.
+administration skills — designed as a portfolio project alongside CompTIA
+Security+ and Microsoft SC-300 (Identity and Access Administrator).
 
 The lab runs entirely on virtual machines: a **pfSense** firewall/router
 segments a network into four isolated VLANs with least-privilege rules, a
@@ -10,6 +11,8 @@ just-in-time privileged access, and a **Wazuh** SIEM deployment provides
 centralized monitoring.
 
 ## Architecture
+
+![Network architecture](diagrams/network-architecture.svg)
 
 - **WAN** connects the firewall out to the internet.
 - **LAN** is the management network — the only segment with routed access to
@@ -32,6 +35,18 @@ centralized monitoring.
 - Rule order enforced deliberately (block before allow) since pfSense
   evaluates top to bottom and stops at the first match
 
+![pfSense running with WAN and LAN up](screenshots/pfsense-console-running.png)
+*pfSense fully installed — WAN pulling a DHCP address, LAN serving 192.168.1.0/24.*
+
+![Four VLANs defined on the LAN interface](screenshots/vlan-interfaces.png)
+*Trusted, IoT, Guest, and Lab/DMZ — four tagged VLANs riding the same physical LAN wire.*
+
+![Interfaces assigned with real subnets](screenshots/interface-assignments.png)
+*Each VLAN assigned as its own interface with a dedicated subnet.*
+
+![Reusable firewall alias for private networks](screenshots/firewall-alias.png)
+*The Private_Networks alias referenced by every VLAN's block rule, instead of retyping subnets four times over.*
+
 ### Identity and access management (Microsoft Entra ID)
 - Scoped test users and a security group, kept isolated from other tenant
   activity
@@ -42,9 +57,28 @@ centralized monitoring.
 - **Conditional Access** policy requiring MFA, scoped to the project's test
   group rather than the whole tenant
 
+![Conditional Access policy enforcing MFA](screenshots/conditional-access-policy.png)
+*Scoped to one group, actively enforcing (not report-only).*
+
+![PIM role activation settings](screenshots/pim-role-settings.png)
+*Global Administrator eligibility: 8-hour bounded activation, MFA and justification required.*
+
 ### Monitoring (Wazuh SIEM)
 - Wazuh manager, indexer, and dashboard deployed as an all-in-one VM
 - Self-monitoring confirmed via the manager's built-in local agent
+
+![Wazuh dashboard showing real self-monitoring events](screenshots/wazuh-self-monitoring.png)
+*Agent 000 — the manager's built-in local agent — actively reporting events.*
+
+## Skills Demonstrated
+
+| Area | Details |
+|---|---|
+| Network security | Firewall configuration, VLAN segmentation, least-privilege rule design, NAT |
+| Identity and access management | Conditional Access, PIM/just-in-time access, least-privilege group scoping |
+| Systems administration | Linux (Ubuntu Server), FreeBSD (pfSense), LVM, systemd, DNS |
+| Monitoring | SIEM deployment and configuration (Wazuh/OpenSearch) |
+| Troubleshooting | Methodical root-cause diagnosis across networking, DNS, and package management issues (see below) |
 
 ## Notable Troubleshooting
 
@@ -76,6 +110,18 @@ these was as valuable as anything that worked on the first try:
   packages conflict. The manager already includes built-in self-monitoring
   (agent ID 000) — no separate agent was needed in the first place.
 
+## Known Limitations
+
+Documented honestly, since this is what a real environment looks like:
+
+- **pfSense-to-Wazuh syslog forwarding** was configured correctly at every
+  layer checked (GUI settings, generated config file, manual daemon reload)
+  but traffic was never confirmed arriving at the Wazuh VM. Set aside after
+  thorough diagnosis rather than resolved.
+- **Live VLAN isolation testing** (proving one VLAN genuinely can't reach
+  another with real traffic) was deferred — the firewall rules are built and
+  verified by configuration, but not yet exercised with a live client on
+  each VLAN.
 
 ## Setup
 
