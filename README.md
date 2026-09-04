@@ -11,8 +11,6 @@ centralized monitoring.
 
 ## Architecture
 
-![Network architecture](diagrams/network-architecture.svg)
-
 - **WAN** connects the firewall out to the internet.
 - **LAN** is the management network — the only segment with routed access to
   the firewall's admin interface and to the internet, and locked down from
