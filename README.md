@@ -1,8 +1,7 @@
 # Home Network Security Lab
 
 A hands-on home lab built to demonstrate practical network security and identity
-administration skills — designed as a portfolio project alongside CompTIA
-Security+ and Microsoft SC-300 (Identity and Access Administrator).
+administration skills.
 
 The lab runs entirely on virtual machines: a **pfSense** firewall/router
 segments a network into four isolated VLANs with least-privilege rules, a
