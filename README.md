@@ -35,22 +35,22 @@ centralized monitoring.
 - Rule order enforced deliberately (block before allow) since pfSense
   evaluates top to bottom and stops at the first match
 
-![pfSense running with WAN and LAN up](screenshots/pfsense-console-running.png)
+![pfSense running with WAN and LAN up](Screenshots/pfsense-console-running.png)
 *pfSense fully installed — WAN pulling a DHCP address, LAN serving 192.168.1.0/24.*
 
-![Four VLANs defined on the LAN interface](screenshots/vlan-interfaces.png)
+![Four VLANs defined on the LAN interface](Screenshots/vlan-interfaces.png)
 *Trusted, IoT, Guest, and Lab/DMZ — four tagged VLANs riding the same physical LAN wire.*
 
-![Interfaces assigned with real subnets](screenshots/interface-assignments.png)
+![Interfaces assigned with real subnets](Screenshots/interface-assignments.png)
 *Each VLAN assigned as its own interface with a dedicated subnet.*
 
-![Reusable firewall alias for private networks](screenshots/firewall-alias.png)
+![Reusable firewall alias for private networks](Screenshots/firewall-alias.png)
 *The Private_Networks alias referenced by every VLAN's block rule, instead of retyping subnets four times over.*
 
-![Block-then-allow rule pair on the IoT VLAN](screenshots/vlan-block-allow-rules.png)
+![Block-then-allow rule pair on the IoT VLAN](Screenshots/vlan-block-allow-rules.png)
 *The actual least-privilege pattern: block anything headed to another private network, then allow what's left — the internet.*
 
-![LAN hardening rules](screenshots/lan-hardening-rules.png)
+![LAN hardening rules](Screenshots/lan-hardening-rules.png)
 *The Phase 6 fix: LAN can still reach the firewall itself and the internet, but no longer has unrestricted access into the VLANs.*
 
 ### Identity and access management (Microsoft Entra ID)
@@ -63,7 +63,7 @@ centralized monitoring.
 - **Conditional Access** policy requiring MFA, scoped to the project's test
   group rather than the whole tenant
 
-![Scoped test group membership](screenshots/entra-group-members.png)
+![Scoped test group membership](Screenshots/entra-group-members.png)
 *PFSenseLab-Users — exactly the two test accounts, nothing else in the tenant swept in.*
 
 ![Conditional Access policy enforcing MFA](screenshots/conditional-access-policy.png)
