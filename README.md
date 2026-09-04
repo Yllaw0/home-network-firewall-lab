@@ -80,20 +80,9 @@ centralized monitoring.
 ![Wazuh dashboard showing self-monitoring events](Screenshots/wazuh-self-monitoring.png)
 *Agent 000 — the manager's built-in local agent — actively reporting events.*
 
-## Skills Demonstrated
-
-| Area | Details |
-|---|---|
-| Network security | Firewall configuration, VLAN segmentation, least-privilege rule design, NAT |
-| Identity and access management | Conditional Access, PIM/just-in-time access, least-privilege group scoping |
-| Systems administration | Linux (Ubuntu Server), FreeBSD (pfSense), LVM, systemd, DNS |
-| Monitoring | SIEM deployment and configuration (Wazuh/OpenSearch) |
-| Troubleshooting | Methodical root-cause diagnosis across networking, DNS, and package management issues (see below) |
-
 ## Notable Troubleshooting
 
-Real lab work doesn't go according to plan, and the process of diagnosing
-these was as valuable as anything that worked on the first try:
+Lab work issues that I ran into and the process of which they were solved:
 
 - **Installer instability:** the pfSense installer's daemon repeatedly failed
   to connect, and a NIC driver mismatch prevented interface detection —
@@ -132,18 +121,6 @@ these was as valuable as anything that worked on the first try:
   packages conflict. The manager already includes built-in self-monitoring
   (agent ID 000) — no separate agent was needed in the first place.
 
-## Known Limitations
-
-Documented honestly, since this is what a real environment looks like:
-
-- **pfSense-to-Wazuh syslog forwarding** was configured correctly at every
-  layer checked (GUI settings, generated config file, manual daemon reload)
-  but traffic was never confirmed arriving at the Wazuh VM. Set aside after
-  thorough diagnosis rather than resolved.
-- **Live VLAN isolation testing** (proving one VLAN genuinely can't reach
-  another with real traffic) was deferred — the firewall rules are built and
-  verified by configuration, but not yet exercised with a live client on
-  each VLAN.
 
 ## Setup
 
