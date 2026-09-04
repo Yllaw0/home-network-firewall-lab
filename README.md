@@ -47,6 +47,12 @@ centralized monitoring.
 ![Reusable firewall alias for private networks](screenshots/firewall-alias.png)
 *The Private_Networks alias referenced by every VLAN's block rule, instead of retyping subnets four times over.*
 
+![Block-then-allow rule pair on the IoT VLAN](screenshots/vlan-block-allow-rules.png)
+*The actual least-privilege pattern: block anything headed to another private network, then allow what's left — the internet.*
+
+![LAN hardening rules](screenshots/lan-hardening-rules.png)
+*The Phase 6 fix: LAN can still reach the firewall itself and the internet, but no longer has unrestricted access into the VLANs.*
+
 ### Identity and access management (Microsoft Entra ID)
 - Scoped test users and a security group, kept isolated from other tenant
   activity
@@ -56,6 +62,9 @@ centralized monitoring.
   standing access at all times
 - **Conditional Access** policy requiring MFA, scoped to the project's test
   group rather than the whole tenant
+
+![Scoped test group membership](screenshots/entra-group-members.png)
+*PFSenseLab-Users — exactly the two test accounts, nothing else in the tenant swept in.*
 
 ![Conditional Access policy enforcing MFA](screenshots/conditional-access-policy.png)
 *Scoped to one group, actively enforcing (not report-only).*
@@ -67,7 +76,10 @@ centralized monitoring.
 - Wazuh manager, indexer, and dashboard deployed as an all-in-one VM
 - Self-monitoring confirmed via the manager's built-in local agent
 
-![Wazuh dashboard showing real self-monitoring events](screenshots/wazuh-self-monitoring.png)
+![Wazuh overview showing real alert volume](screenshots/wazuh-overview-alerts.png)
+*Real alert counts from self-monitoring — note the "no agents registered" panel is expected here; the manager's built-in local agent (000) doesn't count toward that widget, it's a known dashboard quirk, not a gap in coverage.*
+
+![Wazuh dashboard showing self-monitoring events](screenshots/wazuh-self-monitoring.png)
 *Agent 000 — the manager's built-in local agent — actively reporting events.*
 
 ## Skills Demonstrated
@@ -95,16 +107,28 @@ these was as valuable as anything that worked on the first try:
 - **Disk corruption after an interrupted install:** a stuck reboot script led
   to filesystem corruption on a ZFS install; resolved by reinstalling with
   UFS, which is less sensitive to interrupted writes.
+
 - **DNS resolution failure behind the firewall:** LAN clients couldn't
   resolve any domain, despite the resolver service showing as running.
   Root cause, found by checking the resolver's own logs: **DNSSEC validation
   and DNS forwarding were both enabled**, a documented conflict — DNSSEC's
   trust-anchor priming fails in forwarding mode, causing the resolver to
   refuse all queries. Fixed by disabling DNSSEC support.
+
+  ![DNS resolution failing, even from localhost](screenshots/dns-resolution-before-fix.png)
+  *Before: even pfSense's own loopback query gets no response — the resolver isn't answering anything.*
+
+  ![DNS resolution working after disabling DNSSEC](screenshots/dns-resolution-after-fix.png)
+  *After: localhost resolves in 15ms once DNSSEC and forwarding stopped conflicting.*
+
 - **Silent under-allocated disk:** a Wazuh install failed with a "disk full"
   error on a VM with plenty of free space — the Ubuntu installer's guided
   LVM setup had only allocated half the virtual disk to the root volume.
   Fixed by extending the logical volume and filesystem to use the full disk.
+
+  ![LVM volume group showing unallocated space](screenshots/lvm-disk-space-issue.png)
+  *24GB sitting completely unused in the volume group — half the disk was never handed to the filesystem that needed it.*
+
 - **Package conflict:** installing a Wazuh agent on the same host as the
   Wazuh manager silently removed the manager entirely, since the two
   packages conflict. The manager already includes built-in self-monitoring
